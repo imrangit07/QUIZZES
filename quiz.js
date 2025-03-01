@@ -82,6 +82,8 @@ const Questions = [
 ];
 
 let total = Questions.length;
+let selectedAnswers = new Array(total).fill(null);
+let answeredQue = new Array(total).fill(false);
 let index = 0;
 let rightAns = 0;
 let wrongAns = 0;
@@ -90,6 +92,7 @@ let wrongAns = 0;
 let quizQustions = document.querySelector('#quiz-qustions');
 let allOptions = document.querySelectorAll('.options')
 
+//This is for Loading Questions
 const loadQuestion = () => {
     if (index === (total - 1)) {
         const nextBtn = document.querySelector(".btn");
@@ -112,40 +115,60 @@ const loadQuestion = () => {
     allOptions[2].nextElementSibling.innerText = data.c;
     allOptions[3].nextElementSibling.innerText = data.d;
 
+
+    if (selectedAnswers[index] !== null) {
+        allOptions[selectedAnswers[index]].checked = true;
+    }
 }
+
+
+//This is for calculating answers
 
 const getAnswer = () => {
 
     let answer;
-    allOptions.forEach((input) => {
+    allOptions.forEach((input, idx) => {
         if (input.checked) {
             answer = input.value;
+            selectedAnswers[index] = idx;
+            console.log(idx);
+
             // console.log(answer);
         }
     })
     return answer;
 }
 
-const sumbitQuiz = () => {
+
+//This is for next or submitQuiz
+
+const submitQuiz = () => {
 
     const data = Questions[index];
     const cheakAns = getAnswer();
     {
         // console.log(cheakAns + '=' + data.correct);
 
-        if (cheakAns == data.correct) {
-            rightAns++;
+        if (!answeredQue[index]) {
+            if (cheakAns == data.correct) {
+                rightAns++;
 
-        } else {
-            wrongAns++;
+            } else {
+                wrongAns++;
+            }
+            answeredQue[index] = true;
         }
+
+
         index++;
         loadQuestion();
     }
 
 }
-const Previous = ()=>{
-    if(index === 0){
+
+//This is for Previous button
+const Previous = () => {
+    if (index === 0) {
         alert("No More Previous Qustions");
         return;
     }
@@ -158,6 +181,8 @@ const Reset = () => {
     })
 }
 
+
+//This is for End Result after submitQuize
 const endQuiz = () => {
     document.querySelector('.quizzes-box').innerHTML = `
     <div>
